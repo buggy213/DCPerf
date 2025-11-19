@@ -111,6 +111,8 @@ build_aom()
     mkdir -p _build && cd _build || exit
     if [ "$ARCH" = "x86_64" ]; then
         cmake .. -G"Unix Makefiles" -DCMAKE_INSTALL_PREFIX="${FFMPEG_BUILD}"  -DBUILD_SHARED_LIBS=off -DCMAKE_BUILD_TYPE=Release
+    elif [ "$ARCH" = "riscv64" ]; then
+        cmake .. -G"Unix Makefiles" -DCMAKE_INSTALL_PREFIX="${FFMPEG_BUILD}"  -DBUILD_SHARED_LIBS=off -DCMAKE_BUILD_TYPE=Release -DAOM_TARGET_CPU=riscv
     else
         cmake .. -G"Unix Makefiles" -DCMAKE_INSTALL_PREFIX="${FFMPEG_BUILD}"  -DBUILD_SHARED_LIBS=off -DCMAKE_BUILD_TYPE=Release -DAOM_TARGET_CPU=arm64
     fi
