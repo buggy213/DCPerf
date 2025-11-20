@@ -906,6 +906,8 @@ clone_fbgemm_repo() {
   echo "[SETUP] Cloning repository with submodules..."
   git clone --recursive https://github.com/pytorch/FBGEMM.git fbgemm_${FBGEMM_VERSION}
   git -C fbgemm_${FBGEMM_VERSION} checkout ${FBGEMM_VERSION}
+ # Cherry-pick the latest commit from the FBGEMM main branch to fix issue https://github.com/pytorch/FBGEMM/pull/5037
+  git -C fbgemm_${FBGEMM_VERSION} cherry-pick 9df97a7090c2c5edecea4fd08bad11ab8a23284c
 
   # Disable the postbuild script to prevent race conditions during linking
   # This is a workaround for a known issue in the build process
@@ -1129,7 +1131,7 @@ if [[ "$OS_TYPE" == "Linux" && "$ARCH_TYPE" == "aarch64" ]]; then
   if [[ "$BIN" == "tbe_inference_benchmark" ]]; then
     # Resolve repository root based on script location
     SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-    REPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
+    REPO_ROOT="$(cd "${SCRIPT_DIR}/../../.." && pwd)"
 
     # Expected environment name and Python version
     BUILD_ENV="fbgemm_build_oss_env"
