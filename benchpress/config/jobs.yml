@@ -712,6 +712,7 @@
   benchmark: video_transcode_bench
   description: >
     SVT-AV1 based video encoding workload. Compute and memory intensive.
+  tee_output: true
   args:
     - '--encoder {encoder}'
     - '--levels {levels}'
@@ -719,6 +720,7 @@
     - '--runtime {runtime}'
     - '--parallelism {parallelism}'
     - '--procs {procs}'
+    - '--quick {quick}'
   vars:
     - 'encoder=svt'
     - 'levels=0:0'
@@ -726,6 +728,7 @@
     - 'runtime=medium'
     - 'parallelism=1'
     - 'procs=-1'
+    - 'quick=0'
   hooks:
     - hook: cpu-mpstat
       options:
@@ -743,6 +746,7 @@
   benchmark: video_transcode_bench
   description: >
     AOM based video encoding workload. Compute and memory intensive.
+  tee_output: true
   args:
     - '--encoder {encoder}'
     - '--levels {levels}'
@@ -750,6 +754,7 @@
     - '--runtime {runtime}'
     - '--parallelism {parallelism}'
     - '--procs {procs}'
+    - '--quick {quick}'
   vars:
     - 'encoder=aom'
     - 'levels=0:0'
@@ -757,6 +762,7 @@
     - 'runtime=medium'
     - 'parallelism=1'
     - 'procs=-1'
+    - 'quick=0'
   hooks:
     - hook: cpu-mpstat
       options:
@@ -774,6 +780,7 @@
   benchmark: video_transcode_bench
   description: >
     x264 based video encoding workload. Compute and memory intensive.
+  tee_output: true
   args:
     - '--encoder {encoder}'
     - '--levels {levels}'
@@ -781,6 +788,7 @@
     - '--runtime {runtime}'
     - '--parallelism {parallelism}'
     - '--procs {procs}'
+    - '--quick {quick}'
   vars:
     - 'encoder=x264'
     - 'levels=0:0'
@@ -788,6 +796,7 @@
     - 'runtime=medium'
     - 'parallelism=1'
     - 'procs=-1'
+    - 'quick=0'
   hooks:
     - hook: cpu-mpstat
       options:
