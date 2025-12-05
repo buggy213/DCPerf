@@ -95,6 +95,9 @@ build_folly()
     cd "$lib" || exit
     git apply "${BPKGS_WDL_ROOT}/0001-folly.patch"
 
+    # xz-5.2.5 is no longer available, but latest xz works too
+    git apply "${BPKGS_WDL_ROOT}/0002-folly.patch"
+
     sudo ./build/fbcode_builder/getdeps.py install-system-deps --recursive
 
     python3 ./build/fbcode_builder/getdeps.py --allow-system-packages build --scratch-path "${WDL_BUILD}"
