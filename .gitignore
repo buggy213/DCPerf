@@ -1,5 +1,7 @@
 # benchmark output
 results/
+# benchmark metrics
+benchmark_metrics_*
 
 # benchmarks binaries
 benchmarks/
