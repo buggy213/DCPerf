@@ -1,0 +1,14 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index e0b1e83c1..d66373348 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -265,6 +265,9 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+   endif()
+ endif()
+
++# https://github.com/facebook/folly/issues/2416
++add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-DFOLLY_F14_FORCE_FALLBACK=1>)
++
+ # base64 SIMD files compilation
+ if (NOT(${IS_X86_64_ARCH}))
+   message(
