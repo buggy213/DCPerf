@@ -116,6 +116,9 @@ build_fbthrift()
     pushd "${WDL_SOURCE}"
     clone "$lib" || echo "Failed to clone $lib"
     cd "$lib" || exit
+    
+    # same issue as in build_folly
+    git apply "${BPKGS_WDL_ROOT}/0001-fbthrift.patch"
 
     sudo ./build/fbcode_builder/getdeps.py install-system-deps --recursive fbthrift
 
