@@ -127,12 +127,21 @@ build_fbthrift()
     set +e
     python3 ./build/fbcode_builder/getdeps.py --allow-system-packages build fbthrift --scratch-path "${WDL_BUILD}"
     set -e
-    
+        
     pushd "${WDL_BUILD}/repos/github.com-facebook-folly.git"
     git apply "${BPKGS_WDL_ROOT}/0003-folly.patch"
     git apply "${BPKGS_WDL_ROOT}/0004-folly.patch"
     popd
     
+    # second getdeps will break, but lets us patch fizz
+    set +e
+    python3 ./build/fbcode_builder/getdeps.py --allow-system-packages build fbthrift --scratch-path "${WDL_BUILD}"
+    set -e
+
+    pushd "${WDL_BUILD}/repos/github.com-facebookincubator-fizz.git/fizz"
+    git apply "${BPKGS_WDL_ROOT}/0001-fizz.patch"
+    popd
+
     python3 ./build/fbcode_builder/getdeps.py --allow-system-packages build fbthrift --scratch-path "${WDL_BUILD}"
 
     popd || exit

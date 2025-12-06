@@ -1,0 +1,16 @@
+diff --git a/fizz/CMakeLists.txt b/fizz/CMakeLists.txt
+index 0e853fe..c11d9ce 100644
+--- a/fizz/CMakeLists.txt
++++ b/fizz/CMakeLists.txt
+@@ -111,6 +111,11 @@ if(aegis_FOUND)
+     set(FIZZ_HAVE_LIBAEGIS TRUE)
+ endif()
+ 
++
++# https://github.com/facebook/folly/issues/2416
++# we need this so headers match up too
++add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-DFOLLY_F14_FORCE_FALLBACK=1>)
++
+ include(FizzOptions)
+ include(FizzSources)
+ 
