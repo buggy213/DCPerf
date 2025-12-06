@@ -101,7 +101,7 @@ build_folly()
     # see https://github.com/facebook/folly/issues/2493
     # TODO: should we do the other patches also?
     git apply "${BPKGS_WDL_ROOT}/0003-folly.patch"
-    git apply "${BPKGS_WDL_ROOT}/0004-folly.patch
+    git apply "${BPKGS_WDL_ROOT}/0004-folly.patch"
     
     sudo ./build/fbcode_builder/getdeps.py install-system-deps --recursive
 
@@ -128,7 +128,7 @@ build_fbthrift()
     python3 ./build/fbcode_builder/getdeps.py --allow-system-packages build fbthrift --scratch-path "${WDL_BUILD}"
     set -e
     
-    pushd "${WDL_BUILD}/folly"
+    pushd "${WDL_BUILD}/repos/github.com-facebook-folly.git"
     git apply "${BPKGS_WDL_ROOT}/0003-folly.patch"
     git apply "${BPKGS_WDL_ROOT}/0004-folly.patch"
     popd
