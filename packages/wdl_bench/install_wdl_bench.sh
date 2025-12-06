@@ -97,7 +97,11 @@ build_folly()
 
     # xz-5.2.5 is no longer available, but latest xz works too
     git apply "${BPKGS_WDL_ROOT}/0002-folly.patch"
-
+    
+    # see https://github.com/facebook/folly/issues/2493
+    # TODO: should we do the other patches also?
+    git apply "${BPKGS_WDL_ROOT}/0003-folly.patch"
+    
     sudo ./build/fbcode_builder/getdeps.py install-system-deps --recursive
 
     python3 ./build/fbcode_builder/getdeps.py --allow-system-packages build --scratch-path "${WDL_BUILD}"

@@ -1,0 +1,26 @@
+diff --git a/folly/concurrency/AtomicSharedPtr.h b/folly/concurrency/AtomicSharedPtr.h
+index dc9fd2d98..f5cad099c 100644
+--- a/folly/concurrency/AtomicSharedPtr.h
++++ b/folly/concurrency/AtomicSharedPtr.h
+@@ -27,7 +27,7 @@
+ #include <folly/synchronization/AtomicUtil.h>
+ #include <folly/synchronization/detail/AtomicUtils.h>
+ 
+-#if defined(__GLIBCXX__) && FOLLY_HAS_PACKED_SYNC_PTR
++#if defined(__GLIBCXX__) && FOLLY_HAS_PACKED_SYNC_PTR && !FOLLY_RISCV64
+ #define FOLLY_HAS_ATOMIC_SHARED_PTR_HOOKED 1
+ #else
+ #define FOLLY_HAS_ATOMIC_SHARED_PTR_HOOKED 0
+diff --git a/folly/concurrency/detail/AtomicSharedPtr-detail.h b/folly/concurrency/detail/AtomicSharedPtr-detail.h
+index e07542eaa..0258d23e6 100644
+--- a/folly/concurrency/detail/AtomicSharedPtr-detail.h
++++ b/folly/concurrency/detail/AtomicSharedPtr-detail.h
+@@ -22,7 +22,7 @@
+ 
+ #include <folly/lang/SafeAssert.h>
+ 
+-#if defined(__GLIBCXX__)
++#if defined(__GLIBCXX__) && !FOLLY_RISCV64
+ 
+ namespace folly {
+ namespace detail {
