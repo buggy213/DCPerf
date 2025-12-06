@@ -139,6 +139,11 @@ build_fbthrift()
     set -e
 
     pushd "${WDL_BUILD}/repos/github.com-facebookincubator-fizz.git/fizz"
+    # old versions of fbthrift didn't pin a particular version of fizz
+    # which is bad. we have to pin it ourselves
+    cp "${BPKGS_WDL_ROOT}/fizz-rev.txt" "${WDL_SOURCE}/fbthrift/build/deps/github_hashes/facebookincubator/fizz-rev.txt" 
+    git fetch origin 6448c39b70e6006cea7061094cdc3598097d4f46
+    git checkout 6448c39b70e6006cea7061094cdc3598097d4f46
     git apply "${BPKGS_WDL_ROOT}/0001-fizz.patch"
     popd
 

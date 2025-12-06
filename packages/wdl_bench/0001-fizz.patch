@@ -1,8 +1,8 @@
 diff --git a/fizz/CMakeLists.txt b/fizz/CMakeLists.txt
-index 0e853fe..c11d9ce 100644
+index c60177c2..7b6279c6 100644
 --- a/fizz/CMakeLists.txt
 +++ b/fizz/CMakeLists.txt
-@@ -111,6 +111,11 @@ if(aegis_FOUND)
+@@ -107,6 +107,11 @@ if(aegis_FOUND)
      set(FIZZ_HAVE_LIBAEGIS TRUE)
  endif()
  
