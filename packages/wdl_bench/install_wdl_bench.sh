@@ -180,7 +180,8 @@ build_lzbench()
     pushd "${WDL_SOURCE}"
     clone $lib || echo "Failed to clone $lib"
     cd "$lib" || exit
-    make -j
+    # https://github.com/inikep/lzbench/issues/150
+    make DONT_BUILD_TORNADO=1 -j
     cp ./lzbench "${WDL_ROOT}/" || exit
 
     download_dataset 'silesia'
