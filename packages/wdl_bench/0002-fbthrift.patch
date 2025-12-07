@@ -1,0 +1,15 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index c6b2b2a810..12d55afbad 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -132,6 +132,10 @@ if (THRIFT_LIB_ONLY OR build_all)
+ 
+ endif ()
+ 
++# https://github.com/facebook/folly/issues/2416
++# we need this so headers match up too
++add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-DFOLLY_F14_FORCE_FALLBACK=1>)
++
+ if(thriftpy3)
+   find_package(PythonInterp 3.6 REQUIRED)
+   find_package(PythonLibs 3 REQUIRED)

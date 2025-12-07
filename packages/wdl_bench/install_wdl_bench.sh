@@ -120,12 +120,13 @@ build_fbthrift()
     
     # same issue(s) as in build_folly
     git apply "${BPKGS_WDL_ROOT}/0001-fbthrift.patch"
-    
+    git apply "${BPKGS_WDL_ROOT}/0002-fbthrift.patch"    
+
     sudo ./build/fbcode_builder/getdeps.py install-system-deps --recursive fbthrift
     
     # first getdeps will break, but lets us patch folly
     set +e
-    python3 ./build/fbcode_builder/getdeps.py --allow-system-packages build fbthrift --scratch-path "${WDL_BUILD}"
+    python3 ./build/fbcode_builder/getdeps.py --allow-system-packages build fbthrift --scratch-path "${WDL_BUILD}" --current-project fbthrift
     set -e
         
     pushd "${WDL_BUILD}/repos/github.com-facebook-folly.git"
@@ -135,7 +136,7 @@ build_fbthrift()
     
     # second getdeps will break, but lets us patch fizz
     set +e
-    python3 ./build/fbcode_builder/getdeps.py --allow-system-packages build fbthrift --scratch-path "${WDL_BUILD}"
+    python3 ./build/fbcode_builder/getdeps.py --allow-system-packages build fbthrift --scratch-path "${WDL_BUILD}" --current-project fbthrift
     set -e
 
     pushd "${WDL_BUILD}/repos/github.com-facebookincubator-fizz.git/fizz"
@@ -146,9 +147,29 @@ build_fbthrift()
     git checkout 6448c39b70e6006cea7061094cdc3598097d4f46
     git apply "${BPKGS_WDL_ROOT}/0001-fizz.patch"
     popd
+    
+    # third getdeps will break, but lets us patch mvfst
+    set +e
+    python3 ./build/fbcode_builder/getdeps.py --allow-system-packages build fbthrift --scratch-path "${WDL_BUILD}" --current-project fbthrift
+    set -e
 
-    python3 ./build/fbcode_builder/getdeps.py --allow-system-packages build fbthrift --scratch-path "${WDL_BUILD}"
+    pushd "${WDL_BUILD}/repos/github.com-facebook-mvfst.git/quic"
+    git apply "${BPKGS_WDL_ROOT}/0001-mvfst.patch"
+    popd
+    
+    # fourth getdeps will break, but lets us patch wangle
+    set +e
+    python3 ./build/fbcode_builder/getdeps.py --allow-system-packages build fbthrift --scratch-path "${WDL_BUILD}" --current-project fbthrift
+    set -e
+    
+    
+    pushd "${WDL_BUILD}/repos/github.com-facebook-wangle.git/wangle"
+    git apply "${BPKGS_WDL_ROOT}/0001-wangle.patch"
+    popd
 
+    python3 ./build/fbcode_builder/getdeps.py --allow-system-packages build fbthrift --scratch-path "${WDL_BUILD}" --current-project fbthrift
+
+    
     popd || exit
 }
 

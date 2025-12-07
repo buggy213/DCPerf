@@ -1,0 +1,15 @@
+diff --git a/wangle/CMakeLists.txt b/wangle/CMakeLists.txt
+index 041e73c2..381ee378 100644
+--- a/wangle/CMakeLists.txt
++++ b/wangle/CMakeLists.txt
+@@ -81,6 +81,10 @@ if (UNIX AND NOT APPLE)
+   find_package(Librt)
+ endif()
+ 
++# https://github.com/facebook/folly/issues/2416
++# we need this so headers match up too
++add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-DFOLLY_F14_FORCE_FALLBACK=1>)
++
+ include(CheckAtomic)
+ 
+ set(WANGLE_HEADER_DIRS

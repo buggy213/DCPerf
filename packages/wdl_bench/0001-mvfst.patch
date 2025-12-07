@@ -1,0 +1,15 @@
+diff --git a/quic/CMakeLists.txt b/quic/CMakeLists.txt
+index b0bcbf4cf..cc51d60ec 100644
+--- a/quic/CMakeLists.txt
++++ b/quic/CMakeLists.txt
+@@ -3,6 +3,10 @@
+ # This source code is licensed under the MIT license found in the
+ # LICENSE file in the root directory of this source tree.
+ 
++# https://github.com/facebook/folly/issues/2416
++# we need this so headers match up too
++add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-DFOLLY_F14_FORCE_FALLBACK=1>)
++
+ add_library(
+   mvfst_constants
+   QuicConstants.cpp
