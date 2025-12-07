@@ -100,8 +100,8 @@ build_folly()
     
     # see https://github.com/facebook/folly/issues/2493
     # TODO: should we do the other patches also?
-    git apply "${BPKGS_WDL_ROOT}/0003-folly.patch"
-    git apply "${BPKGS_WDL_ROOT}/0004-folly.patch"
+    git apply "${BPKGS_WDL_ROOT}/0003-folly.patch" || echo "failed to patch"
+    git apply "${BPKGS_WDL_ROOT}/0004-folly.patch" || echo "failed to patch"
     
     sudo ./build/fbcode_builder/getdeps.py install-system-deps --recursive
 
@@ -119,8 +119,8 @@ build_fbthrift()
     cd "$lib" || exit
     
     # same issue(s) as in build_folly
-    git apply "${BPKGS_WDL_ROOT}/0001-fbthrift.patch"
-    git apply "${BPKGS_WDL_ROOT}/0002-fbthrift.patch"    
+    git apply "${BPKGS_WDL_ROOT}/0001-fbthrift.patch" || echo "failed to patch"
+    git apply "${BPKGS_WDL_ROOT}/0002-fbthrift.patch" || echo "failed to patch"
 
     sudo ./build/fbcode_builder/getdeps.py install-system-deps --recursive fbthrift
     
@@ -130,8 +130,8 @@ build_fbthrift()
     set -e
         
     pushd "${WDL_BUILD}/repos/github.com-facebook-folly.git"
-    git apply "${BPKGS_WDL_ROOT}/0003-folly.patch"
-    git apply "${BPKGS_WDL_ROOT}/0004-folly.patch"
+    git apply "${BPKGS_WDL_ROOT}/0003-folly.patch" || echo "failed to patch"
+    git apply "${BPKGS_WDL_ROOT}/0004-folly.patch" || echo "failed to patch"
     popd
     
     # second getdeps will break, but lets us patch fizz
@@ -145,7 +145,7 @@ build_fbthrift()
     cp "${BPKGS_WDL_ROOT}/fizz-rev.txt" "${WDL_SOURCE}/fbthrift/build/deps/github_hashes/facebookincubator/fizz-rev.txt" 
     git fetch origin 6448c39b70e6006cea7061094cdc3598097d4f46
     git checkout 6448c39b70e6006cea7061094cdc3598097d4f46
-    git apply "${BPKGS_WDL_ROOT}/0001-fizz.patch"
+    git apply "${BPKGS_WDL_ROOT}/0001-fizz.patch" || echo "failed to patch"
     popd
     
     # third getdeps will break, but lets us patch mvfst
@@ -154,7 +154,7 @@ build_fbthrift()
     set -e
 
     pushd "${WDL_BUILD}/repos/github.com-facebook-mvfst.git/quic"
-    git apply "${BPKGS_WDL_ROOT}/0001-mvfst.patch"
+    git apply "${BPKGS_WDL_ROOT}/0001-mvfst.patch" || echo "failed to patch"
     popd
     
     # fourth getdeps will break, but lets us patch wangle
@@ -164,7 +164,7 @@ build_fbthrift()
     
     
     pushd "${WDL_BUILD}/repos/github.com-facebook-wangle.git/wangle"
-    git apply "${BPKGS_WDL_ROOT}/0001-wangle.patch"
+    git apply "${BPKGS_WDL_ROOT}/0001-wangle.patch" || echo "failed to patch"
     popd
 
     python3 ./build/fbcode_builder/getdeps.py --allow-system-packages build fbthrift --scratch-path "${WDL_BUILD}" --current-project fbthrift
