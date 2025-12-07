@@ -54,7 +54,7 @@ WDL_DATASETS="${WDL_ROOT}/datasets"
 LINUX_DIST_ID="$(awk -F "=" '/^ID=/ {print $2}' /etc/os-release | tr -d '"')"
 
 if [ "$LINUX_DIST_ID" = "ubuntu" ]; then
-  apt install -y cmake autoconf automake flex bison \
+  sudo apt install -y cmake autoconf automake flex bison \
     nasm clang patch git libssl-dev libc6-dev\
     tar unzip perl openssl python3-dev gawk libstdc++6 python3-numpy
 
