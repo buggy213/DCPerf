@@ -1,0 +1,99 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index e0b1e83c1..117f37b6a 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -582,7 +582,13 @@ install(
+ )
+ 
+ option(BUILD_TESTS "If enabled, compile the tests." OFF)
++set(BUILD_TESTS OFF)
+ option(BUILD_BENCHMARKS "If enabled, compile the benchmarks." OFF)
++set(BUILD_BENCHMARKS ON)
++
++message(STATUS "BUILD_TESTS is ${BUILD_TESTS}")
++message(STATUS "BUILD_BENCHMARKS is ${BUILD_BENCHMARKS}")
++
+ option(BUILD_BROKEN_TESTS "If enabled, compile tests that are known to be broken." OFF)
+ option(BUILD_HANGING_TESTS "If enabled, compile tests that are known to hang." OFF)
+ option(BUILD_SLOW_TESTS "If enabled, compile tests that take a while to run in debug mode." OFF)
+@@ -713,9 +719,9 @@ if (BUILD_TESTS OR BUILD_BENCHMARKS)
+       BENCHMARK container_evicting_cache_map_bench
+         SOURCES EvictingCacheMapBench.cpp
+       TEST container_evicting_cache_map_test SOURCES EvictingCacheMapTest.cpp
+-      TEST container_f14_fwd_test SOURCES F14FwdTest.cpp
+-      TEST container_f14_map_test SOURCES F14MapTest.cpp
+-      TEST container_f14_set_test SOURCES F14SetTest.cpp
++      TEST container_f14_fwd_test BROKEN SOURCES F14FwdTest.cpp
++      TEST container_f14_map_test BROKEN SOURCES F14MapTest.cpp
++      TEST container_f14_set_test BROKEN SOURCES F14SetTest.cpp
+       BENCHMARK container_fbvector_benchmark
+         SOURCES FBVectorBenchmark.cpp
+         HEADERS FBVectorBenchmarks.cpp.h
+diff --git a/build/fbcode_builder/manifests/folly b/build/fbcode_builder/manifests/folly
+index c406e8aed..d400df93a 100644
+--- a/build/fbcode_builder/manifests/folly
++++ b/build/fbcode_builder/manifests/folly
+@@ -45,7 +45,7 @@ openssl
+ zlib
+ 
+ [dependencies.os=linux]
+-libiberty
++# libiberty
+ libunwind
+ 
+ # xz depends on autoconf which does not build on
+diff --git a/folly/concurrency/AtomicSharedPtr.h b/folly/concurrency/AtomicSharedPtr.h
+index a7491f25f..331c60560 100644
+--- a/folly/concurrency/AtomicSharedPtr.h
++++ b/folly/concurrency/AtomicSharedPtr.h
+@@ -27,7 +27,7 @@
+ #include <folly/synchronization/AtomicUtil.h>
+ #include <folly/synchronization/detail/AtomicUtils.h>
+ 
+-#if defined(__GLIBCXX__) && FOLLY_HAS_PACKED_SYNC_PTR
++#if defined(__GLIBCXX__) && FOLLY_HAS_PACKED_SYNC_PTR && !FOLLY_RISCV64
+ #define FOLLY_HAS_ATOMIC_SHARED_PTR_HOOKED 1
+ #else
+ #define FOLLY_HAS_ATOMIC_SHARED_PTR_HOOKED 0
+diff --git a/folly/concurrency/detail/AtomicSharedPtr-detail.h b/folly/concurrency/detail/AtomicSharedPtr-detail.h
+index 9cc70a3a4..38379ea82 100644
+--- a/folly/concurrency/detail/AtomicSharedPtr-detail.h
++++ b/folly/concurrency/detail/AtomicSharedPtr-detail.h
+@@ -22,7 +22,7 @@
+ 
+ #include <folly/lang/SafeAssert.h>
+ 
+-#if defined(__GLIBCXX__)
++#if defined(__GLIBCXX__) && !FOLLY_RISCV64
+ 
+ namespace folly {
+ namespace detail {
+diff --git a/folly/lang/Hint-inl.h b/folly/lang/Hint-inl.h
+index 85a3adc70..c922443d6 100644
+--- a/folly/lang/Hint-inl.h
++++ b/folly/lang/Hint-inl.h
+@@ -101,7 +101,11 @@ FOLLY_ALWAYS_INLINE void compiler_must_not_elide(T const& t, std::false_type) {
+   //
+   // avoided for pointers to avoid fallout in calling code which mistakenly
+   // applies the hint to the address of a value but not to the value itself
++  #if defined(__mips__) || defined(__riscv)
++  asm volatile("" : : "rm"(t) : "memory");
++  #else
+   asm volatile("" : : "r"(t));
++  #endif
+ }
+ 
+ template <typename T>
+diff --git a/folly/test/MemsetBenchmark.cpp b/folly/test/MemsetBenchmark.cpp
+index fd549278f..b7917e0c6 100644
+--- a/folly/test/MemsetBenchmark.cpp
++++ b/folly/test/MemsetBenchmark.cpp
+@@ -40,7 +40,7 @@ size_t getPow2(size_t v) {
+ 
+ template <void* memset_impl(void*, int, size_t)>
+ void bmMemset(void* buf, size_t length, size_t iters) {
+-#if !defined(__aarch64__)
++#if !defined(__aarch64__) && !defined(__riscv)
+   __asm__ volatile(".align 64\n");
+ #endif
+ #pragma unroll(1)

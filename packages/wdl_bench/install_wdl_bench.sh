@@ -113,9 +113,11 @@ build_folly()
     clone "$lib" || echo "Failed to clone $lib"
     cd "$lib" || exit
 
+    git apply "${BPKGS_WDL_ROOT}/0001-folly.patch" || echo "failed to patch"
+
     ./build/fbcode_builder/getdeps.py install-system-deps --recursive
 
-    python3 ./build/fbcode_builder/getdeps.py --allow-system-packages build --scratch-path "${WDL_BUILD}"
+    python3 ./build/fbcode_builder/getdeps.py --allow-system-packages build --no-tests --scratch-path "${WDL_BUILD}" --extra-cmake-defines='{"CMAKE_CXX_FLAGS": "-DFOLLY_F14_FORCE_FALLBACK=1"}'
 
     for benchmark in $folly_benchmark_list; do
       cp "$WDL_BUILD/build/folly/$benchmark" "$WDL_ROOT/$benchmark"
@@ -134,7 +136,7 @@ build_fbthrift()
 
     ./build/fbcode_builder/getdeps.py install-system-deps --recursive fbthrift
 
-    python3 ./build/fbcode_builder/getdeps.py --allow-system-packages build fbthrift --scratch-path "${WDL_BUILD}" --extra-cmake-defines='{"enable_tests": "1"}'
+    python3 ./build/fbcode_builder/getdeps.py --allow-system-packages build fbthrift --scratch-path "${WDL_BUILD}" --extra-cmake-defines='{"enable_tests": "1", "CMAKE_CXX_FLAGS": "-DFOLLY_F14_FORCE_FALLBACK=1"}' --current-project fbthrift --no-deps
 
     for benchmark in $fbthrift_benchmark_list; do
       cp "$WDL_BUILD/build/fbthrift/bin/$benchmark" "$WDL_ROOT/$benchmark"
@@ -150,7 +152,8 @@ build_lzbench()
     pushd "${WDL_SOURCE}"
     clone $lib || echo "Failed to clone $lib"
     cd "$lib" || exit
-    make BUILD_STATIC=1 -j "$(nproc)"
+    # https://github.com/inikep/lzbench/issues/150
+    make BUILD_STATIC=1 DONT_BUILD_TORNADO=1 -j "$(nproc)"
     cp ./lzbench "${WDL_ROOT}/" || exit
 
     download_dataset 'silesia'
