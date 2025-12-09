@@ -5,7 +5,9 @@
 # LICENSE file in the root directory of this source tree.
 set -Eeuo pipefail
 
-GLIBC_VERSION=$(getconf GNU_LIBC_VERSION | cut -f 2 -d\  )
+# ubuntu 24.04 is somehow not able to build the glibc it's shipped with
+# (???) so fix it to a particular version
+# GLIBC_VERSION=$(getconf GNU_LIBC_VERSION | cut -f 2 -d\  )
 
 ##################### BENCHMARK CONFIG #########################
 
@@ -30,7 +32,7 @@ declare -A TAGS=(
     ['vdso']='a90085a8e4e1e07a93cc45a68da246fa98a9f831'
     ['libaegis']='0.4.2'
     ['xxhash']='136cc1f8fe4d5ea62a7c16c8424d4fa5158f6d68'
-    ['glibc']="glibc-${GLIBC_VERSION}"
+    ['glibc']="glibc-2.41"
     ['isa-l']='d36de972efc18f2e85ca182a8b6758ecc7da512b'
     ['sleef']='3.8'
 )
@@ -134,9 +136,11 @@ build_fbthrift()
     clone "$lib" || echo "Failed to clone $lib"
     cd "$lib" || exit
 
+    git apply "${BPKGS_WDL_ROOT}/0001-fbthrift.patch"
+
     ./build/fbcode_builder/getdeps.py install-system-deps --recursive fbthrift
 
-    python3 ./build/fbcode_builder/getdeps.py --allow-system-packages build fbthrift --scratch-path "${WDL_BUILD}" --extra-cmake-defines='{"enable_tests": "1", "CMAKE_CXX_FLAGS": "-DFOLLY_F14_FORCE_FALLBACK=1"}' --current-project fbthrift --no-deps
+    python3 ./build/fbcode_builder/getdeps.py --allow-system-packages build fbthrift --scratch-path "${WDL_BUILD}" --extra-cmake-defines='{"CMAKE_CXX_FLAGS": "-DFOLLY_F14_FORCE_FALLBACK=1"}' --current-project fbthrift
 
     for benchmark in $fbthrift_benchmark_list; do
       cp "$WDL_BUILD/build/fbthrift/bin/$benchmark" "$WDL_ROOT/$benchmark"
@@ -326,7 +330,8 @@ build_libaegis
 build_xxhash
 build_glibc
 build_isa_l
-build_sleef
+# come back to sleef later
+# build_sleef
 
 cp "${BPKGS_WDL_ROOT}/run.sh" ./
 cp "${BPKGS_WDL_ROOT}/run_prod.sh" ./
