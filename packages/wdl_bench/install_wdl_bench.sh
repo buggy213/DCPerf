@@ -203,7 +203,7 @@ build_libaegis()
         wget https://ziglang.org/download/0.15.2/zig-aarch64-linux-0.15.2.tar.xz
         tar xvf zig-aarch64-linux-0.15.2.tar.xz
         mv zig-aarch64-linux-0.15.2 zig
-    else if [ "$ARCH" = "riscv64" ]; then
+    elif [ "$ARCH" = "riscv64" ]; then
         wget https://ziglang.org/download/0.15.2/zig-riscv64-linux-0.15.2.tar.xz
         tar xvf zig-riscv64-linux-0.15.2.tar.xz
         mv zig-riscv64-linux-0.15.2 zig
