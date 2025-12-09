@@ -242,7 +242,8 @@ build_glibc()
     clone $lib || echo "Failed to clone $lib"
     pushd "${WDL_BUILD}"
     mkdir glibc-build && cd glibc-build
-    "${WDL_SOURCE}/$lib"/configure --prefix="${WDL_BUILD}/glibc-build"
+    # known 24.04 has warning w/ glibc < 2.41, should be ok
+    "${WDL_SOURCE}/$lib"/configure --prefix="${WDL_BUILD}/glibc-build" --disable-werror
     make -j "$(nproc)"
     make bench-build -j "$(nproc)"
 
