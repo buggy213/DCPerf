@@ -188,6 +188,9 @@ build_vdso()
     pushd "${WDL_SOURCE}"
     clone $lib || echo "Failed to clone $lib"
     cd "$lib/vdso_bench" || exit
+
+    git apply "${BPKGS_WDL_ROOT}/0001-vdso.patch" || echo "failed to patch"
+
     make -j "$(nproc)"
     cp ./vdso_bench "${WDL_ROOT}/" || exit
 

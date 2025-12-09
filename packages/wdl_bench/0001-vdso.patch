@@ -1,0 +1,33 @@
+diff --git a/vdso_bench/vdso_bench.c b/vdso_bench/vdso_bench.c
+index e8f302e..4efb49a 100644
+--- a/vdso_bench/vdso_bench.c
++++ b/vdso_bench/vdso_bench.c
+@@ -95,6 +95,28 @@ static uint64_t gettime_asm(barrier_t b) {
+ 	return get_cntvct() * read_cntfrq_el0();
+ }
+ 
++#elif defined(__riscv)
++
++// RISC-V barrier instructions
++#define fence()         asm volatile("fence" : : : "memory")
++#define fence_i()       asm volatile("fence.i" : : : "memory")
++
++/* RISC-V rdcycle instruction reads the cycle CSR (CPU cycle counter) */
++/* Note: rdcycle is privileged in Linux 6.6+, but may work in older kernels */
++/* If rdcycle fails, the kernel will trap and may return 0 or cause a fault */
++static inline uint64_t get_rdcycle() {
++	uint64_t val;
++	asm volatile("rdcycle %0" : "=r"(val));
++	return val;
++}
++
++static uint64_t gettime_asm(enum barrier b) {
++	if (b) {
++		fence();
++	}
++	return get_rdcycle();
++}
++
+ #else
+ static uint64_t gettime_asm(enum barrier b)
+ {
