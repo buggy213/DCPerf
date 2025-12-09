@@ -172,9 +172,10 @@ build_openssl()
     pushd "${WDL_SOURCE}"
     clone $lib || echo "Failed to clone $lib"
     cd "$lib" || exit
-    ./Configure --prefix="${WDL_BUILD}/openssl" --openssldir="${WDL_BUILD}/openssl" --no-doc
+    ./Configure --prefix="${WDL_BUILD}/openssl" --openssldir="${WDL_BUILD}/openssl"
     make -j "$(nproc)"
-    make install
+    make install_sw
+    make install_ssldirs
     cp "${WDL_BUILD}/openssl/bin/openssl" "${WDL_ROOT}/" || exit
 
 
