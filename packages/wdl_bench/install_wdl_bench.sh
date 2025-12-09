@@ -172,7 +172,7 @@ build_openssl()
     pushd "${WDL_SOURCE}"
     clone $lib || echo "Failed to clone $lib"
     cd "$lib" || exit
-    ./Configure --prefix="${WDL_BUILD}/openssl" --openssldir="${WDL_BUILD}/openssl"
+    ./Configure --prefix="${WDL_BUILD}/openssl" --openssldir="${WDL_BUILD}/openssl" --no-docs
     make -j "$(nproc)"
     make install
     cp "${WDL_BUILD}/openssl/bin/openssl" "${WDL_ROOT}/" || exit
@@ -203,6 +203,10 @@ build_libaegis()
         wget https://ziglang.org/download/0.15.2/zig-aarch64-linux-0.15.2.tar.xz
         tar xvf zig-aarch64-linux-0.15.2.tar.xz
         mv zig-aarch64-linux-0.15.2 zig
+    else if [ "$ARCH" = "riscv64" ]; then
+        wget https://ziglang.org/download/0.15.2/zig-riscv64-linux-0.15.2.tar.xz
+        tar xvf zig-riscv64-linux-0.15.2.tar.xz
+        mv zig-riscv64-linux-0.15.2 zig
     else
         wget https://ziglang.org/download/0.15.2/zig-x86_64-linux-0.15.2.tar.xz
         tar xvf zig-x86_64-linux-0.15.2.tar.xz
